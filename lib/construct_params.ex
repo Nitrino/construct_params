@@ -1,5 +1,3 @@
 defmodule ConstructParams do
-  @moduledoc """
-  Documentation for `ConstructParams`.
-  """
+  @moduledoc false
 end

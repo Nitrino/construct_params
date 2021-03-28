@@ -13,7 +13,9 @@ defmodule ConstructParams.MixProject do
       package: package(),
       description: description(),
       name: "ConstructParams",
-      source_url: @github_url
+      source_url: @github_url,
+      homepage_url: @github_url,
+      docs: docs()
     ]
   end
 
@@ -38,6 +40,13 @@ defmodule ConstructParams.MixProject do
 
   defp description do
     "Casting the incoming controller parameters"
+  end
+
+  defp docs do
+    [
+      main: "readme",
+      extras: ["README.md"]
+    ]
   end
 
   # Run "mix help deps" to learn about dependencies.
