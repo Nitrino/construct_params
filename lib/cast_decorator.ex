@@ -10,7 +10,7 @@ defmodule ConstructParams.CastDecorator do
   ## Examples
 
       defmodule MyApp.MyController do
-        use MyApp.CastDecorator
+        use ConstructParams.CastDecorator
 
         @decorate cast(MyApp.ConstructCastModule)
         def create(conn, params)
@@ -30,7 +30,7 @@ defmodule ConstructParams.CastDecorator do
           unquote(body)
 
         {:error, errors} ->
-          unquote(fallback_module).call(unquote(conn), {:error, errors})
+          unquote(fallback_module).call(unquote(conn), {:error, :invalid_params, errors})
       end
     end
   end
