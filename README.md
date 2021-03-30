@@ -37,7 +37,7 @@ end
 2. Then add a decorator to the action with the parameters you want to cast.
 
 ```elixir
-defmodule Requests.UsersController do
+defmodule MyAppWeb.Api.UsersController do
   use ConstructParams.CastDecorator
 
   @decorate cast(MyAppWeb.Api.Requests.Users.Index)
