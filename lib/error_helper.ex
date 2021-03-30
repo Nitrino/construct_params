@@ -1,12 +1,15 @@
-defmodule ConstructParams.ErrorView do
+defmodule ConstructParams.ErrorHelper do
+  @moduledoc """
+  Helpers for rendering casting errors
+  """
+
   @doc """
   Format construct error params.
 
   ## Examples
 
-      iex> format_errors(%{
-
-      })
+      iex> format_errors(%{user_id: :invalid})
+      %{user_id: %{message: "Invalid field type", path: "/user_id"}}
   """
   def format_errors(errors) do
     Enum.reduce(errors, %{}, fn {key, value}, acc ->
