@@ -10,27 +10,41 @@ defmodule ConstructParams.ErrorHelper do
 
       iex> format_errors(%{user_id: :invalid})
       %{user_id: %{message: "Invalid field type", path: "/user_id"}}
+
+      iex> format_errors(%{user: %{custom_data: :missing, metadata: %{avatar_url: :invalid}}})
+      %{
+        custom_data: %{message: "Missing field", path: "/user/custom_data"},
+        avatar_url: %{message: "Invalid field type", path: "/user/metadata/avatar_url"}
+      }
   """
   def format_errors(errors) do
-    Enum.reduce(errors, %{}, fn {key, value}, acc ->
-      error = get_error(key, value, [])
-      Map.put(acc, error.main_key, %{message: error.message, path: error.path})
-    end)
+    errors
+    |> Map.to_list()
+    |> format_errors([], %{})
   end
 
-  defp get_error(key, value, acc) when is_atom(value) do
-    path_list = Enum.reverse([key | acc])
+  defp format_errors([], _path, acc), do: acc
 
-    %{
-      path: "/" <> Enum.join(path_list, "/"),
-      message: error_message(key, value),
-      main_key: key
+  defp format_errors([{key, value} | errors], path, acc) when is_atom(value) do
+    format_errors(errors, path, put_error(acc, key, value, path))
+  end
+
+  defp format_errors([{key, value} | errors], path, acc) when is_map(value) do
+    format_errors(Map.to_list(value), [key | path], acc)
+  end
+
+  defp put_error(acc, key, value, path) do
+    path =
+      [key | path]
+      |> Enum.reverse()
+      |> Enum.join("/")
+
+    error = %{
+      path: "/" <> path,
+      message: error_message(key, value)
     }
-  end
 
-  defp get_error(key, value, acc) when is_map(value) do
-    [{new_key, new_value}] = Map.to_list(value)
-    get_error(new_key, new_value, [key | acc])
+    Map.put(acc, key, error)
   end
 
   defp error_message(_key, :missing) do
