@@ -10,7 +10,7 @@ by adding `construct_params` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:construct_params, "~> 0.2.0"}
+    {:construct_params, "~> 0.2.1"}
   ]
 end
 ```
