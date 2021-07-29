@@ -6,7 +6,7 @@ defmodule ConstructParams.MixProject do
   def project do
     [
       app: :construct_params,
-      version: "0.2.1",
+      version: "0.3.0",
       elixir: "~> 1.11",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
