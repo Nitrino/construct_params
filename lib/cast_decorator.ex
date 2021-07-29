@@ -18,18 +18,39 @@ defmodule ConstructParams.CastDecorator do
       end
   """
 
-  use Decorator.Define, cast: 1
+  use Decorator.Define, [cast: 2, cast: 1]
+  def cast(cast_module, body, context), do: cast(cast_module, [], body, context)
 
-  def cast(cast_module, body, %{args: [conn, params], module: module}) do
+  def cast(cast_module, options, body, %{args: [conn, params], module: module}) do
     fallback_module = get_fallback_module(module)
 
     quote do
-      case unquote(cast_module).make(unquote(params), make_map: true) do
+      origin_params =
+        if Keyword.get(unquote(options), :with_root, false) do
+          %{"root" => unquote(params)}
+        else
+          unquote(params)
+        end
+
+      case unquote(cast_module).make(origin_params, make_map: true) do
         {:ok, casted_params} ->
-          unquote(params) = casted_params
+          unquote(params) =
+            if Keyword.get(unquote(options), :with_root, false) do
+              casted_params[:root]
+            else
+              casted_params
+            end
+
           unquote(body)
 
         {:error, errors} ->
+          errors =
+            if Keyword.get(unquote(options), :with_root, false) do
+              errors[:root]
+            else
+              errors
+            end
+
           unquote(fallback_module).call(unquote(conn), {:error, :invalid_params, errors})
       end
     end
