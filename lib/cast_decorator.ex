@@ -18,7 +18,8 @@ defmodule ConstructParams.CastDecorator do
       end
   """
 
-  use Decorator.Define, cast: 2
+  use Decorator.Define, [cast: 2, cast: 1]
+  def cast(cast_module, body, context), do: cast(cast_module, [], body, context)
 
   def cast(cast_module, options, body, %{args: [conn, params], module: module}) do
     fallback_module = get_fallback_module(module)
